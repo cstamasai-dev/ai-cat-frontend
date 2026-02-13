@@ -1,52 +1,122 @@
 .cat-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    font-size: 0.98rem;
+    min-width: 780px;
 }
 
 .cat-table th, .cat-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    padding: 14px 16px;
     text-align: left;
+    vertical-align: top;
+}
+
+.cat-photo {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px -14px rgba(31, 37, 43, 0.6);
+    border: 1px solid rgba(31, 37, 43, 0.12);
+    background: #fff;
+    display: block;
+}
+
+.cat-photo-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.cat-photo-button {
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.cat-photo-button:focus-visible {
+    outline: 3px solid rgba(243, 154, 195, 0.35);
+    outline-offset: 3px;
+    border-radius: 18px;
+}
+
+.cat-photo-preview {
+    position: absolute;
+    left: calc(100% + 18px);
+    top: 50%;
+    transform: translateY(-50%) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    background: #fff;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 18px 35px -22px rgba(31, 37, 43, 0.7);
+    border: 1px solid rgba(31, 37, 43, 0.12);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 5;
+}
+
+.cat-photo-preview-img {
+    width: 192px;
+    height: 192px;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+}
+
+.cat-photo-wrap:hover .cat-photo-preview,
+.cat-photo-wrap:focus-within .cat-photo-preview {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
+
+.cat-photo-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7b2f56;
+    background: rgba(243, 154, 195, 0.18);
+    border: 1px dashed rgba(123, 47, 86, 0.35);
 }
 
 .cat-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+    background: rgba(243, 154, 195, 0.18);
+    color: #7b2f56;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
 }
 
 .cat-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: rgba(31, 37, 43, 0.03);
 }
 
 .cat-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(126, 199, 255, 0.18);
 }
 
-.cat-table .badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 12px;
-    color: white;
-    font-size: 0.9em;
+.cat-table td {
+    border-bottom: 1px solid rgba(31, 37, 43, 0.08);
 }
 
-.cat-table .badge-friendly {
-    background-color: #4CAF50; /* Green */
+.cat-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.cat-table .badge-aloof {
-    background-color: #FF9800; /* Orange */
+.table-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.cat-table .badge-aggressive {
-    background-color: #F44336; /* Red */
-}
-
-.cat-table .badge-playful {
-    background-color: #2196F3; /* Blue */
-}
-
-.cat-table .badge-calm {
-    background-color: #9C27B0; /* Purple */
+.cat-table .temperament-badge {
+    margin: 0;
 }

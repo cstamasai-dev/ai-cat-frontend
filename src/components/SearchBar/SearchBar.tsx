@@ -13,6 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearchChange }) => 
                 placeholder="Search cats..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
+                className="search-input"
             />
         </div>
     );

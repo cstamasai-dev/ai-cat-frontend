@@ -11,10 +11,14 @@ interface EditCatModalProps {
 
 const EditCatModal: React.FC<EditCatModalProps> = ({ isOpen, onClose, catData, onSave }) => {
     const [formData, setFormData] = useState<Cat | null>(null);
+    const [temperamentInput, setTemperamentInput] = useState('');
+    const [temperamentList, setTemperamentList] = useState<string[]>([]);
 
     useEffect(() => {
         if (catData) {
             setFormData(catData);
+            setTemperamentList(catData.temperament ?? []);
+            setTemperamentInput('');
         }
     }, [catData]);
 
@@ -27,10 +31,35 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ isOpen, onClose, catData, o
         }
     };
 
+    const addTemperament = () => {
+        const value = temperamentInput.trim();
+        if (!value) {
+            return;
+        }
+        if (temperamentList.some(item => item.toLowerCase() === value.toLowerCase())) {
+            setTemperamentInput('');
+            return;
+        }
+        setTemperamentList(prev => [...prev, value]);
+        setTemperamentInput('');
+    };
+
+    const removeTemperament = (value: string) => {
+        setTemperamentList(prev => prev.filter(item => item !== value));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (formData) {
-            onSave(formData);
+            const pending = temperamentInput.trim();
+            const finalTemperaments = [...temperamentList];
+            if (pending && !finalTemperaments.some(item => item.toLowerCase() === pending.toLowerCase())) {
+                finalTemperaments.push(pending);
+            }
+            onSave({
+                ...formData,
+                temperament: finalTemperaments,
+            });
             onClose();
         }
     };
@@ -52,7 +81,38 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ isOpen, onClose, catData, o
                     </label>
                     <label>
                         Temperament:
-                        <input type="text" name="temperament" value={formData.temperament} onChange={handleChange} required />
+                        <div className="temperament-input-row">
+                            <input
+                                type="text"
+                                placeholder="Temperament"
+                                value={temperamentInput}
+                                onChange={(e) => setTemperamentInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        addTemperament();
+                                    }
+                                }}
+                            />
+                            <button type="button" className="temperament-add" onClick={addTemperament}>Add</button>
+                        </div>
+                        {temperamentList.length > 0 && (
+                            <div className="temperament-list">
+                                {temperamentList.map(value => (
+                                    <span key={value} className="temperament-chip">
+                                        {value}
+                                        <button
+                                            type="button"
+                                            className="temperament-remove"
+                                            onClick={() => removeTemperament(value)}
+                                            aria-label={`Remove ${value}`}
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </label>
                     <label>
                         Origin:

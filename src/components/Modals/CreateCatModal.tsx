@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Cat } from '../../types/Cat';
+import './Modals.css';
 
 interface CreateCatModalProps {
     isOpen: boolean;
@@ -10,15 +11,38 @@ interface CreateCatModalProps {
 const CreateCatModal: React.FC<CreateCatModalProps> = ({ isOpen, onClose, onCreate }) => {
     const [name, setName] = useState('');
     const [weight, setWeight] = useState('');
-    const [temperament, setTemperament] = useState('');
+    const [temperamentInput, setTemperamentInput] = useState('');
+    const [temperamentList, setTemperamentList] = useState<string[]>([]);
     const [origin, setOrigin] = useState('');
     const [description, setDescription] = useState('');
     const [lifeSpan, setLifeSpan] = useState('');
     const [friendliness, setFriendliness] = useState(0);
     const [grooming, setGrooming] = useState(0);
 
+    const addTemperament = () => {
+        const value = temperamentInput.trim();
+        if (!value) {
+            return;
+        }
+        if (temperamentList.some(item => item.toLowerCase() === value.toLowerCase())) {
+            setTemperamentInput('');
+            return;
+        }
+        setTemperamentList(prev => [...prev, value]);
+        setTemperamentInput('');
+    };
+
+    const removeTemperament = (value: string) => {
+        setTemperamentList(prev => prev.filter(item => item !== value));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const pending = temperamentInput.trim();
+        const finalTemperaments = [...temperamentList];
+        if (pending && !finalTemperaments.some(item => item.toLowerCase() === pending.toLowerCase())) {
+            finalTemperaments.push(pending);
+        }
         const newCat: Cat = {
             id: Math.random(), // Simple ID generation
             name,
@@ -26,39 +50,22 @@ const CreateCatModal: React.FC<CreateCatModalProps> = ({ isOpen, onClose, onCrea
                 imperial: weight,
                 metric: weight,
             },
-            breed_group: null,
-            cfa_url: null,
-            vetstreet_url: null,
-            vcahospitals_url: null,
-            temperament,
+            temperament: finalTemperaments,
             origin,
-            country_codes: '',
-            country_code: '',
             description,
             life_span: lifeSpan,
             indoor: 0,
             lap: 0,
-            alt_names: '',
-            adaptability: 0,
-            affection_level: 0,
             child_friendly: 0,
             dog_friendly: 0,
             energy_level: 0,
             grooming,
             health_issues: 0,
             intelligence: 0,
-            shedding_level: 0,
-            social_needs: 0,
             stranger_friendly: friendliness,
-            vocalisation: 0,
-            experimental: 0,
             hairless: 0,
-            natural: 0,
             rare: 0,
-            rex: 0,
-            suppressed_tail: 0,
             short_legs: 0,
-            wikipedia_url: null,
             hypoallergenic: 0,
             reference_image_id: '',
         };
@@ -75,7 +82,38 @@ const CreateCatModal: React.FC<CreateCatModalProps> = ({ isOpen, onClose, onCrea
                 <form onSubmit={handleSubmit}>
                     <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
                     <input type="text" placeholder="Weight" value={weight} onChange={(e) => setWeight(e.target.value)} required />
-                    <input type="text" placeholder="Temperament" value={temperament} onChange={(e) => setTemperament(e.target.value)} required />
+                    <div className="temperament-input-row">
+                        <input
+                            type="text"
+                            placeholder="Temperament"
+                            value={temperamentInput}
+                            onChange={(e) => setTemperamentInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    addTemperament();
+                                }
+                            }}
+                        />
+                        <button type="button" className="temperament-add" onClick={addTemperament}>Add</button>
+                    </div>
+                    {temperamentList.length > 0 && (
+                        <div className="temperament-list">
+                            {temperamentList.map(value => (
+                                <span key={value} className="temperament-chip">
+                                    {value}
+                                    <button
+                                        type="button"
+                                        className="temperament-remove"
+                                        onClick={() => removeTemperament(value)}
+                                        aria-label={`Remove ${value}`}
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
                     <input type="text" placeholder="Origin" value={origin} onChange={(e) => setOrigin(e.target.value)} required />
                     <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
                     <input type="text" placeholder="Life Span" value={lifeSpan} onChange={(e) => setLifeSpan(e.target.value)} required />

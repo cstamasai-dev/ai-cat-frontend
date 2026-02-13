@@ -26,17 +26,34 @@ const App: React.FC = () => {
         (cat.name ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const totalCats = cats.length;
+    const filteredCount = filteredCats.length;
+
     return (
-        <div>
-            <h1>Cat Data App</h1>
-            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-            <CatTable 
-                cats={filteredCats} 
-                onEdit={handleEditCat} 
-                onDelete={deleteCat}
-                searchTerm={searchTerm}
-            />
-            <button onClick={() => setCreateModalOpen(true)}>Add Cat</button>
+        <div className="app">
+            <header className="app-header">
+                <div className="title-wrap">
+                    <span className="eyebrow">Feline registry</span>
+                    <h1 className="app-title">Cat Data App</h1>
+                    <p className="app-subtitle">Browse breed profiles, scan temperaments, and keep your favorite cats organized.</p>
+                </div>
+                <div className="header-actions">
+                    <button className="btn btn-primary" onClick={() => setCreateModalOpen(true)}>Add Cat</button>
+                </div>
+            </header>
+
+            <section className="content-card">
+                <div className="toolbar">
+                    <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+                    <div className="stat-pill">Showing {filteredCount} of {totalCats}</div>
+                </div>
+                <CatTable 
+                    cats={filteredCats} 
+                    onEdit={handleEditCat} 
+                    onDelete={deleteCat}
+                    searchTerm={searchTerm}
+                />
+            </section>
 
             {isCreateModalOpen && (
                 <CreateCatModal 

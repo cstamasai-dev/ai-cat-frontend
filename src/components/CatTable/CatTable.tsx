@@ -19,6 +19,7 @@ const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm 
     <table className="cat-table">
       <thead>
         <tr>
+          <th>Photo</th>
           <th>Name</th>
           <th>Weight</th>
           <th>Temperament</th>
