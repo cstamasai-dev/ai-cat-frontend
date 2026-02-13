@@ -1,8 +1,15 @@
+.cat-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(31, 37, 43, 0.08);
+    border: 1px solid rgba(31, 37, 43, 0.08);
+}
+
 .cat-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.98rem;
-    min-width: 780px;
+    min-width: 2400px;
 }
 
 .cat-table th, .cat-table td {
@@ -99,6 +106,19 @@
     background-color: rgba(31, 37, 43, 0.03);
 }
 
+.description-cell {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bool-cell {
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent-strong);
+}
+
 .cat-table tr:hover {
     background-color: rgba(126, 199, 255, 0.18);
 }
@@ -119,4 +139,29 @@
 
 .cat-table .temperament-badge {
     margin: 0;
+}
+
+.filter-row {
+    background: rgba(243, 154, 195, 0.08) !important;
+}
+
+.filter-row th {
+    background: rgba(243, 154, 195, 0.08);
+    padding: 8px 12px;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid rgba(243, 154, 195, 0.4);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: #fff;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: #f39ac3;
+    box-shadow: 0 0 0 2px rgba(243, 154, 195, 0.2);
 }

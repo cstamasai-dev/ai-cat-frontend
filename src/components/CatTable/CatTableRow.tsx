@@ -47,14 +47,28 @@ const CatTableRow: React.FC<CatTableRowProps> = ({ cat, onEdit, onDelete }) => {
                         <span className="cat-photo-placeholder">No image</span>
                     )}
                 </td>
-                <td>{cat.name}</td>
-                <td>{cat.weight?.metric}</td>
+                <td>{cat.name ?? '—'}</td>
+                <td>{cat.weight?.imperial ?? '—'}</td>
+                <td>{cat.weight?.metric ?? '—'}</td>
                 <td>
                     <TemperamentBadge temperament={cat.temperament ?? []} />
                 </td>
-                <td>{cat.origin}</td>
-                <td>{cat.description}</td>
-                <td>{cat.life_span}</td>
+                <td>{cat.origin ?? '—'}</td>
+                <td className="description-cell">{cat.description ?? '—'}</td>
+                <td>{cat.life_span ?? '—'}</td>
+                <td>{cat.indoor ?? '—'}</td>
+                <td>{cat.lap ?? '—'}</td>
+                <td>{cat.child_friendly ?? '—'}</td>
+                <td>{cat.dog_friendly ?? '—'}</td>
+                <td>{cat.energy_level ?? '—'}</td>
+                <td>{cat.grooming ?? '—'}</td>
+                <td>{cat.health_issues ?? '—'}</td>
+                <td>{cat.intelligence ?? '—'}</td>
+                <td>{cat.stranger_friendly ?? '—'}</td>
+                <td className="bool-cell">{(cat.hairless ?? 0) === 1 ? '✓' : '—'}</td>
+                <td className="bool-cell">{(cat.rare ?? 0) === 1 ? '✓' : '—'}</td>
+                <td className="bool-cell">{(cat.short_legs ?? 0) === 1 ? '✓' : '—'}</td>
+                <td className="bool-cell">{(cat.hypoallergenic ?? 0) === 1 ? '✓' : '—'}</td>
                 <td className="table-actions">
                     <button className="btn btn-ghost btn-sm" onClick={() => onEdit(cat)}>Edit</button>
                     <button className="btn btn-danger btn-sm" aria-label="Delete cat" onClick={() => onDelete(cat.id)}>🗑️</button>
