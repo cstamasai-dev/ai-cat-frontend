@@ -126,6 +126,7 @@ p {
     border-radius: 999px;
     font-weight: 600;
     font-size: 0.9rem;
+    margin-left: auto;
 }
 
 .btn {

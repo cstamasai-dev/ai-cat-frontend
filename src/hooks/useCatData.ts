@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Cat } from '../types/Cat';
-import sampleCats from '../data/sampleCats.json';
+import sampleCats from '../data/sampleCats2.json';
 
 const useCatData = () => {
     const [cats, setCats] = useState<Cat[]>(sampleCats);

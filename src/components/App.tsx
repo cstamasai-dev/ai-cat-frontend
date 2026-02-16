@@ -2,32 +2,22 @@ import React, { useState } from 'react';
 import CatTable from './CatTable/CatTable';
 import CreateCatModal from './Modals/CreateCatModal';
 import EditCatModal from './Modals/EditCatModal';
-import SearchBar from './SearchBar/SearchBar';
 import { Cat } from '../types/Cat';
 import useCatData from '../hooks/useCatData';
 
 const App: React.FC = () => {
     const { cats, createCat, updateCat, deleteCat } = useCatData();
-    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCount, setFilteredCount] = useState(0);
     const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-
-    const handleSearchChange = (term: string) => {
-        setSearchTerm(term);
-    };
 
     const handleEditCat = (cat: Cat) => {
         setSelectedCat(cat);
         setEditModalOpen(true);
     };
 
-    const filteredCats = cats.filter(cat => 
-        (cat.name ?? '').toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     const totalCats = cats.length;
-    const filteredCount = filteredCats.length;
 
     return (
         <div className="app">
@@ -44,14 +34,13 @@ const App: React.FC = () => {
 
             <section className="content-card">
                 <div className="toolbar">
-                    <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-                    <div className="stat-pill">Showing {filteredCount} of {totalCats}</div>
+                    <div className="stat-pill">Showing {filteredCount} out of {totalCats}</div>
                 </div>
                 <CatTable 
-                    cats={filteredCats} 
+                    cats={cats} 
                     onEdit={handleEditCat} 
                     onDelete={deleteCat}
-                    searchTerm={searchTerm}
+                    onFilteredCount={setFilteredCount}
                 />
             </section>
 

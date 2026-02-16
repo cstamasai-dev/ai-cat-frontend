@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CatTableRow from './CatTableRow';
 import { Cat } from '../../types/Cat';
 import './CatTable.css';
@@ -7,7 +7,7 @@ interface CatTableProps {
   cats: Cat[];
   onEdit: (cat: Cat) => void;
   onDelete: (catId: number) => void;
-  searchTerm: string;
+  onFilteredCount?: (count: number) => void;
 }
 
 interface Filters {
@@ -33,7 +33,8 @@ interface Filters {
   hypoallergenic: string;
 }
 
-const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm }) => {
+const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, onFilteredCount }) => {
+  const pageSize = 7;
   const [filters, setFilters] = useState<Filters>({
     name: '',
     weightImperial: '',
@@ -56,6 +57,7 @@ const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm 
     shortLegs: '',
     hypoallergenic: '',
   });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
     setFilters(prev => ({
@@ -65,7 +67,6 @@ const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm 
   };
 
   const filteredCats = cats.filter(cat => {
-    const matchesSearchTerm = (cat.name ?? '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesName = (cat.name ?? '').toLowerCase().includes(filters.name.toLowerCase());
     const matchesWeightImperial = (cat.weight?.imperial ?? '').toLowerCase().includes(filters.weightImperial.toLowerCase());
     const matchesWeightMetric = (cat.weight?.metric ?? '').toLowerCase().includes(filters.weightMetric.toLowerCase());
@@ -87,13 +88,34 @@ const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm 
     const matchesShortLegs = !filters.shortLegs || (cat.short_legs ?? 0).toString() === filters.shortLegs;
     const matchesHypoallergenic = !filters.hypoallergenic || (cat.hypoallergenic ?? 0).toString() === filters.hypoallergenic;
 
-    return matchesSearchTerm && matchesName && matchesWeightImperial && matchesWeightMetric && 
-           matchesTemperament && matchesOrigin && matchesDescription && matchesLifeSpan &&
-           matchesIndoor && matchesLap && matchesChildFriendly && matchesDogFriendly &&
-           matchesEnergyLevel && matchesGrooming && matchesHealthIssues && matchesIntelligence &&
-           matchesStrangerFriendly && matchesHairless && matchesRare && matchesShortLegs &&
-           matchesHypoallergenic;
+    return matchesName && matchesWeightImperial && matchesWeightMetric &&
+      matchesTemperament && matchesOrigin && matchesDescription && matchesLifeSpan &&
+      matchesIndoor && matchesLap && matchesChildFriendly && matchesDogFriendly &&
+      matchesEnergyLevel && matchesGrooming && matchesHealthIssues && matchesIntelligence &&
+      matchesStrangerFriendly && matchesHairless && matchesRare && matchesShortLegs &&
+      matchesHypoallergenic;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredCats.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageStart = (safePage - 1) * pageSize;
+  const pagedCats = filteredCats.slice(pageStart, pageStart + pageSize);
+
+  useEffect(() => {
+    if (onFilteredCount) {
+      onFilteredCount(filteredCats.length);
+    }
+  }, [filteredCats.length, onFilteredCount]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, cats.length]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <div className="cat-table-wrapper">
@@ -149,16 +171,35 @@ const CatTable: React.FC<CatTableProps> = ({ cats, onEdit, onDelete, searchTerm 
           </tr>
         </thead>
         <tbody>
-          {filteredCats.map(cat => (
-            <CatTableRow 
-              key={cat.id} 
-              cat={cat} 
-              onEdit={onEdit} 
-              onDelete={onDelete} 
+          {pagedCats.map(cat => (
+            <CatTableRow
+              key={cat.id}
+              cat={cat}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))}
         </tbody>
       </table>
+      <div className="cat-table-footer">
+        <div className="pagination">
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={safePage === 1 || filteredCats.length === 0}
+          >
+            Previous
+          </button>
+          <span className="pagination-info">Page {safePage} of {totalPages}</span>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={safePage === totalPages || filteredCats.length === 0}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
